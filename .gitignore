@@ -1,0 +1,8 @@
+*.pyc
+__pycache__
+MNIST_data
+.ipynb_checkpoints
+.ipython
+.local
+.cache
+refs
