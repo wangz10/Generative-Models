@@ -52,13 +52,15 @@ def display_mnist_images(xs, figsize=None):
     n = len(xs)
     canvas = np.empty((28, 28*n))
     for i, x in enumerate(xs):
+        # scale to (0, 1)
+        x = preprocessing.minmax_scale(x.T).T
         canvas[:, i*28: (i+1)*28] = x[0].reshape(28, 28)
     fig, ax = plt.subplots(figsize=figsize)
     ax.imshow(canvas, cmap="gray")
     ax.set_axis_off()
     return ax
 
-def sample_latent_space(model, n_dims, n=20, sample_type='uniform'):
+def sample_latent_space(model, n_dims, n=20, sample_type='uniform', scale=True):
     '''Sample the latent space of n_dims, 
     then generate data (images) using model to organize generated 
     data (images) into a squared canvas for plotting.
@@ -78,6 +80,9 @@ def sample_latent_space(model, n_dims, n=20, sample_type='uniform'):
     c = 0
     for i in range(n):
         for j in range(n):
-            canvas[(n-i-1)*28:(n-i)*28, j*28:(j+1)*28] = xs_gen[c].reshape(28, 28)
+            x = xs_gen[c]
+            if scale:
+                x = preprocessing.minmax_scale(x.T).T
+            canvas[(n-i-1)*28:(n-i)*28, j*28:(j+1)*28] = x.reshape(28, 28)
             c += 1
     return canvas
