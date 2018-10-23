@@ -6,3 +6,7 @@ MNIST_data
 .local
 .cache
 refs
+.jupyter
+.keras/datasets
+images
+trained_models
