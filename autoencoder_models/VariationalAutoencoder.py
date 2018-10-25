@@ -45,12 +45,12 @@ class VariationalAutoencoder(object):
 
             # cost
             # squared loss
-            reconstr_loss = 0.5 * tf.reduce_sum(tf.pow(tf.subtract(self.reconstruction, self.x), 2.0))
+            self.reconstr_loss = 0.5 * tf.reduce_sum(tf.pow(tf.subtract(self.reconstruction, self.x), 2.0))
             # KL divergence
-            latent_loss = -0.5 * tf.reduce_sum(1 + self.z_log_sigma_sq
+            self.latent_loss = -0.5 * tf.reduce_sum(1 + self.z_log_sigma_sq
                                             - tf.square(self.z_mean)
                                             - tf.exp(self.z_log_sigma_sq), 1)
-            self.cost = tf.reduce_mean(reconstr_loss + latent_loss)
+            self.cost = tf.reduce_mean(self.reconstr_loss + self.latent_loss)
             self.optimizer = optimizer.minimize(self.cost)
 
             # create a saver 
@@ -105,6 +105,9 @@ class VariationalAutoencoder(object):
 
     def calc_total_cost(self, X):
         return self.sess.run(self.cost, feed_dict = {self.x: X})
+
+    def calc_losses(self, X):
+        return self.sess.run(self.reconstr_loss, self.latent_loss, feed_dict={self.x: X})
 
     def transform(self, X):
         return self.sess.run(self.z_mean, feed_dict={self.x: X})
