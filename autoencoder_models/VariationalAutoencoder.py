@@ -107,7 +107,8 @@ class VariationalAutoencoder(object):
         return self.sess.run(self.cost, feed_dict = {self.x: X})
 
     def calc_losses(self, X):
-        return self.sess.run(self.reconstr_loss, self.latent_loss, feed_dict={self.x: X})
+        reconstr_loss, latent_losses = self.sess.run([self.reconstr_loss, self.latent_loss], feed_dict={self.x: X})
+        return reconstr_loss, np.mean(latent_losses)
 
     def transform(self, X):
         return self.sess.run(self.z_mean, feed_dict={self.x: X})
